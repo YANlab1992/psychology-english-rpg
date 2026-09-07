@@ -1,0 +1,267 @@
+{
+  "title": "心理学英语大冒险",
+  "subtitle": "序幕：心理学真的会读心吗？",
+  "story": [
+    {
+      "heading": "心域学院，新生报到日",
+      "body": "学院里流传着一本记录心理学知识的《心域档案》。今天，档案馆却被一团“想当然”迷雾笼罩。"
+    },
+    {
+      "heading": "第一个误会",
+      "body": "“学心理学的人一定知道我在想什么。”这句话变成了会复制错误说法的读心怪。"
+    },
+    {
+      "heading": "1879：科学之门",
+      "body": "从冯特建立心理学实验室开始，心理学逐渐以可观察、可检验、可重复的方法研究心灵与行为。"
+    },
+    {
+      "heading": "你的任务",
+      "body": "在校园中找到行为、心理过程和科学方法三条证据，用准确的英文概念澄清这个误会。"
+    }
+  ],
+  "dialogues": {
+    "professorFirst": [
+      {
+        "speaker": "颜教授",
+        "text": "欢迎来到专业英语课。先别急着背词，心理学研究的究竟是什么？"
+      },
+      {
+        "speaker": "阿心",
+        "text": "Behaviors and mental processes——行为与心理过程。"
+      },
+      {
+        "speaker": "颜教授",
+        "text": "很好。去校园里找三条证据，再到实验室接受一次无惩罚摸底。"
+      }
+    ],
+    "professorAgain": [
+      {
+        "speaker": "颜教授",
+        "text": "把定义、观察和方法连接起来。科学结论不能只靠猜测。"
+      }
+    ],
+    "xiaosou": [
+      {
+        "speaker": "小搜",
+        "text": "我是小搜，负责找资料。看到放大镜标记就调查，来源比听起来厉害更重要。"
+      },
+      {
+        "speaker": "小搜",
+        "text": "取证口诀：先记下看到了什么，再判断它支持什么；不要让结论跑在观察前面。"
+      }
+    ],
+    "adu": [
+      {
+        "speaker": "阿读",
+        "text": "我是阿读，负责拆论文。先找主张，再看作者用了什么方法支持它。"
+      },
+      {
+        "speaker": "阿读",
+        "text": "英语提示：scientific study 是核心，behavior 和 mental processes 缺一不可。"
+      }
+    ]
+  },
+  "terms": [
+    {
+      "id": "behavior",
+      "en": "behavior",
+      "zh": "行为",
+      "note": "可以被观察或记录的行动与反应。"
+    },
+    {
+      "id": "mental_process",
+      "en": "mental process",
+      "zh": "心理过程",
+      "note": "如知觉、注意、记忆、情绪和思维。"
+    },
+    {
+      "id": "scientific_method",
+      "en": "scientific method",
+      "zh": "科学方法",
+      "note": "提出问题、形成假设并用系统证据检验。"
+    },
+    {
+      "id": "empirical",
+      "en": "empirical",
+      "zh": "实证的",
+      "note": "建立在系统观察或实验数据之上。"
+    },
+    {
+      "id": "psychology",
+      "en": "psychology",
+      "zh": "心理学",
+      "note": "the scientific study of behavior and mental processes"
+    }
+  ],
+  "evidenceChallenges": [
+    {
+      "id": "behavior",
+      "title": "行为记录",
+      "location": "图书馆台阶",
+      "observation": "一名学生收到通知后停下脚步、皱眉，并把手机放进口袋。",
+      "prompt": "Which item is directly observable behavior?",
+      "options": [
+        "The student feels secretly disappointed.",
+        "The student puts the phone into a pocket.",
+        "The student will remember this forever."
+      ],
+      "answer": 1,
+      "success": "正确。动作可以直接记录；内在感受需要借助报告或其他测量。",
+      "hint": "只选择现场观察者能够直接看见并记录的内容。"
+    },
+    {
+      "id": "mental_process",
+      "title": "心理过程记录",
+      "location": "安静花园",
+      "observation": "访谈记录写道：参与者努力回忆单词，并报告自己越来越紧张。",
+      "prompt": "Which pair names mental processes in this note?",
+      "options": [
+        "memory and emotion",
+        "walking and writing",
+        "height and age"
+      ],
+      "answer": 0,
+      "success": "正确。记忆和情绪都属于心理过程，可以通过任务与自我报告进行研究。",
+      "hint": "寻找发生在信息加工或主观体验中的过程。"
+    },
+    {
+      "id": "scientific_method",
+      "title": "方法流程记录",
+      "location": "实验室公告栏",
+      "observation": "研究者提出问题、形成可检验假设，并按统一程序收集两组数据。",
+      "prompt": "Why is this procedure scientific?",
+      "options": [
+        "It sounds surprising.",
+        "It uses a testable question and systematic evidence.",
+        "It guarantees that every result is true."
+      ],
+      "answer": 1,
+      "success": "正确。科学方法依靠可检验问题、透明程序和系统证据，而不是保证永远正确。",
+      "hint": "关注 testable、systematic 和 evidence 三个关键词。"
+    }
+  ],
+  "diagnostic": [
+    {
+      "id": "d1",
+      "prompt": "Which definition best matches psychology?",
+      "options": [
+        "The ability to read hidden thoughts",
+        "The scientific study of behavior and mental processes",
+        "A collection of advice about personality",
+        "The study of the brain only"
+      ],
+      "answer": 1,
+      "feedback": "Psychology studies both observable behavior and mental processes through scientific methods.",
+      "skill": "术语"
+    },
+    {
+      "id": "d2",
+      "prompt": "Which action is the best example of an empirical method?",
+      "options": [
+        "Trusting a popular saying",
+        "Guessing from one personal story",
+        "Collecting observations with a stated procedure",
+        "Choosing the most surprising explanation"
+      ],
+      "answer": 2,
+      "feedback": "Empirical claims rely on observations or data collected with a transparent method.",
+      "skill": "证据"
+    },
+    {
+      "id": "d3",
+      "prompt": "Choose the logical order of a simple scientific investigation.",
+      "options": [
+        "Conclusion → question → evidence",
+        "Question → hypothesis → test → conclusion",
+        "Opinion → repetition → truth",
+        "Prediction → popularity → explanation"
+      ],
+      "answer": 1,
+      "feedback": "A conclusion should follow a question, a testable hypothesis and evidence.",
+      "skill": "结构"
+    },
+    {
+      "id": "d4",
+      "prompt": "Which sentence makes an appropriately limited claim?",
+      "options": [
+        "Psychologists always know what people think.",
+        "One result proves every theory about the mind.",
+        "This study suggests an association under these conditions.",
+        "All behavior has one simple cause."
+      ],
+      "answer": 2,
+      "feedback": "Academic English often qualifies a claim with words such as suggests and under these conditions.",
+      "skill": "表达"
+    }
+  ],
+  "battleSkills": [
+    {
+      "id": "define",
+      "key": "1",
+      "name": "定义",
+      "en": "Define",
+      "color": "#e86c5d",
+      "claim": "“心理学就是读心术！”",
+      "prompt": "Which evidence card gives the strongest definition?",
+      "options": [
+        "Psychology predicts every private thought.",
+        "Psychology scientifically studies behavior and mental processes.",
+        "Psychology is whatever a psychologist believes."
+      ],
+      "answer": 1,
+      "success": "定义准确！“读心术”不能替代科学定义。",
+      "retry": "定义范围不准确。回想刚刚找到的 behavior 与 mental process。"
+    },
+    {
+      "id": "observe",
+      "key": "2",
+      "name": "观察",
+      "en": "Observe",
+      "color": "#3d94c6",
+      "claim": "“我感觉它是真的，所以它就是真的！”",
+      "prompt": "What should a scientific response ask for first?",
+      "options": [
+        "A systematic observation or test",
+        "A more confident speaker",
+        "A more dramatic story"
+      ],
+      "answer": 0,
+      "success": "观察有效！个人确信不等于实证证据。",
+      "retry": "响亮的说法不是证据。寻找可以记录和复核的观察。"
+    },
+    {
+      "id": "compare",
+      "key": "3",
+      "name": "比较",
+      "en": "Compare",
+      "color": "#52a568",
+      "claim": "“一次猜中，就证明每次都能猜中！”",
+      "prompt": "Which comparison tests this claim better?",
+      "options": [
+        "Remember only successful guesses",
+        "Compare accuracy across many controlled trials with chance",
+        "Ask whether the guess felt impressive"
+      ],
+      "answer": 1,
+      "success": "比较成立！多次受控试验才能判断表现是否超过机会水平。",
+      "retry": "需要明确的基线和多次试验，不能只挑一次成功。"
+    },
+    {
+      "id": "qualify",
+      "key": "4",
+      "name": "限定",
+      "en": "Qualify",
+      "color": "#c88a2b",
+      "claim": "“一个结果可以解释所有人！”",
+      "prompt": "Which wording is appropriately cautious?",
+      "options": [
+        "This proves the claim for everyone forever.",
+        "The finding suggests a pattern under the tested conditions.",
+        "No limitation needs to be discussed."
+      ],
+      "answer": 1,
+      "success": "限定成功！结论回到了证据能够支持的范围。",
+      "retry": "科学表达需要说明条件和边界，避免绝对化。"
+    }
+  ]
+}
