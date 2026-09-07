@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import type { DialogueLine, EvidenceChallenge, PrologueContent, SaveData } from '../types';
 import { saves } from '../services/SaveService';
 import { badge, bodyText, button, COLORS, FONT, heading, panel, progressMeter, toast } from '../ui/theme';
+import { isTouchMode, TouchButton, TouchJoystick } from '../ui/touch';
 
 type InteractionKind = 'professor' | 'xiaosou' | 'adu' | 'evidence' | 'lab';
 interface InteractionPoint {
@@ -33,6 +34,10 @@ export class CampusScene extends Phaser.Scene {
   private interactionCooldown = 0;
   private moveTarget?: Phaser.Math.Vector2;
   private minimapPlayer!: Phaser.GameObjects.Rectangle;
+  private touchMode = false;
+  private touchJoystick?: TouchJoystick;
+  private touchAction?: TouchButton;
+  private touchSprint?: TouchButton;
 
   constructor() {
     super('Campus');
@@ -41,6 +46,7 @@ export class CampusScene extends Phaser.Scene {
   create(): void {
     this.content = this.registry.get('content') as PrologueContent;
     this.save = this.registry.get('save') as SaveData;
+    this.touchMode = isTouchMode();
     this.physics.world.setBounds(0, 0, 1800, 1000);
     this.obstacles = this.physics.add.staticGroup();
     this.drawWorldV2();
@@ -48,6 +54,7 @@ export class CampusScene extends Phaser.Scene {
     this.createEvidence();
     this.createPlayer();
     this.createHud();
+    this.createTouchControls();
     this.setupInput();
     this.setupPointerMovement();
     this.updateActorStatus();
@@ -264,7 +271,7 @@ export class CampusScene extends Phaser.Scene {
     }).setOrigin(0.5).setScrollFactor(0).setDepth(1112).setVisible(false);
     button(this, 910, 57, 190, 48, '学习档案  Tab', COLORS.blue, () => this.toggleArchive(), { depth: 1105, fontSize: 17, icon: '▤' })
       .setScrollFactor(0, 0, true);
-    this.add.text(24, 686, 'WASD / 点击移动   Shift冲刺   F互动', {
+    this.add.text(24, 686, this.touchMode ? '拖动摇杆 / 点击地面移动　右侧按钮互动' : 'WASD / 点击移动   Shift冲刺   F互动', {
       fontFamily: FONT, fontSize: '15px', color: '#fffbed', backgroundColor: '#082630dd', padding: { x: 11, y: 6 }
     }).setScrollFactor(0).setDepth(1110);
   }
@@ -285,8 +292,26 @@ export class CampusScene extends Phaser.Scene {
     });
   }
 
+  private createTouchControls(): void {
+    if (!this.touchMode) return;
+    this.touchJoystick = new TouchJoystick(this, 102, 590, 66);
+    this.touchSprint = new TouchButton(this, 238, 620, 43, '冲刺', COLORS.blue);
+    this.touchAction = new TouchButton(this, 1170, 607, 58, '互动', COLORS.coral, () => this.handleActionKey());
+  }
+
+  private updateTouchControls(): void {
+    if (!this.touchMode) return;
+    const movementAvailable = !this.dialogue && !this.archive && !this.evidenceOverlay;
+    this.touchJoystick?.setVisible(movementAvailable);
+    this.touchSprint?.setVisible(movementAvailable);
+    this.touchAction?.setVisible(!this.archive && !this.evidenceOverlay);
+    if (this.dialogue) this.touchAction?.setLabel('继续');
+    else this.touchAction?.setLabel(this.nearestInteraction() ? '互动' : '操作');
+  }
+
   private setupPointerMovement(): void {
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+      if (this.touchJoystick?.owns(pointer) || this.touchSprint?.owns(pointer) || this.touchAction?.owns(pointer)) return;
       if (this.evidenceOverlay && this.activeEvidence) {
         if (!this.activeEvidence.result && pointer.x >= 215 && pointer.x <= 1065) {
           const selected = Math.round((pointer.y - 408) / 65);
@@ -309,10 +334,15 @@ export class CampusScene extends Phaser.Scene {
 
   update(): void {
     if (!this.player || !this.keys) return;
+    this.updateTouchControls();
     if (this.dialogue || this.archive || this.evidenceOverlay) { this.player.setVelocity(0); return; }
-    const dx = Number(this.keys.D.isDown || this.cursors.right.isDown) - Number(this.keys.A.isDown || this.cursors.left.isDown);
-    const dy = Number(this.keys.S.isDown || this.cursors.down.isDown) - Number(this.keys.W.isDown || this.cursors.up.isDown);
-    const speed = this.keys.SHIFT.isDown ? 265 : 172;
+    const keyX = Number(this.keys.D.isDown || this.cursors.right.isDown) - Number(this.keys.A.isDown || this.cursors.left.isDown);
+    const keyY = Number(this.keys.S.isDown || this.cursors.down.isDown) - Number(this.keys.W.isDown || this.cursors.up.isDown);
+    const touchVector = this.touchJoystick?.vector;
+    const usingJoystick = Boolean(touchVector && touchVector.lengthSq() > 0);
+    const dx = usingJoystick ? touchVector!.x : keyX;
+    const dy = usingJoystick ? touchVector!.y : keyY;
+    const speed = this.keys.SHIFT.isDown || this.touchSprint?.isDown ? 265 : 172;
     const velocity = new Phaser.Math.Vector2(dx, dy).normalize().scale(speed);
     if (dx !== 0 || dy !== 0) {
       this.moveTarget = undefined;
@@ -329,7 +359,7 @@ export class CampusScene extends Phaser.Scene {
     this.minimapPlayer.setPosition(1057 + (this.player.x / 1800) * 170, 62 + (this.player.y / 1000) * 64);
     const nearest = this.nearestInteraction();
     this.prompt.setVisible(Boolean(nearest));
-    if (nearest) this.prompt.setText(`F　${nearest.label}`);
+    if (nearest) this.prompt.setText(this.touchMode ? `互动　${nearest.label}` : `F　${nearest.label}`);
   }
 
   private handleActionKey(): void {
@@ -488,7 +518,9 @@ export class CampusScene extends Phaser.Scene {
     const divider = this.add.rectangle(137, 94, 3, 130, COLORS.gold, 0.8);
     const speaker = this.add.text(166, 24, line.speaker, { fontFamily: FONT, fontSize: '23px', fontStyle: 'bold', color: '#e86c5d' });
     const text = bodyText(this, 166, 64, line.text, 890, 22);
-    const hint = this.add.text(1068, 148, `${this.dialogueIndex + 1}/${this.dialogueLines.length}   F / Enter ▶`, {
+    const hint = this.add.text(1068, 148, this.touchMode
+      ? `${this.dialogueIndex + 1}/${this.dialogueLines.length}   触碰“继续” ▶`
+      : `${this.dialogueIndex + 1}/${this.dialogueLines.length}   F / Enter ▶`, {
       fontFamily: FONT, fontSize: '15px', fontStyle: 'bold', color: '#248b84'
     }).setOrigin(1, 0.5);
     this.dialogue.add([portrait, divider, speaker, text, hint]);

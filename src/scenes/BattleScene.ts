@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import type { BattleSkillContent, PrologueContent, SaveData } from '../types';
 import { saves } from '../services/SaveService';
 import { badge, button, COLORS, FONT, heading, panel, bodyText, drawPixelBackdrop, progressMeter, toast } from '../ui/theme';
+import { isTouchMode, TouchJoystick } from '../ui/touch';
 
 export class BattleScene extends Phaser.Scene {
   private content!: PrologueContent;
@@ -23,6 +24,8 @@ export class BattleScene extends Phaser.Scene {
   private timerText!: Phaser.GameObjects.Text;
   private comboText!: Phaser.GameObjects.Text;
   private moveTarget?: Phaser.Math.Vector2;
+  private touchMode = false;
+  private touchJoystick?: TouchJoystick;
 
   constructor() {
     super('Battle');
@@ -31,6 +34,7 @@ export class BattleScene extends Phaser.Scene {
   create(): void {
     this.content = this.registry.get('content') as PrologueContent;
     this.save = this.registry.get('save') as SaveData;
+    this.touchMode = isTouchMode();
     this.save.battleSkillsUsed = [];
     this.save.focusHits = 0;
     this.used.clear();
@@ -38,7 +42,9 @@ export class BattleScene extends Phaser.Scene {
     this.createActors();
     this.createHud();
     this.setupInput();
+    this.createTouchControls();
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+      if (this.touchJoystick?.owns(pointer)) return;
       if (this.pausedForQuestion || !this.arena.contains(pointer.worldX, pointer.worldY)) return;
       this.moveTarget = new Phaser.Math.Vector2(pointer.worldX, pointer.worldY);
     });
@@ -140,7 +146,9 @@ export class BattleScene extends Phaser.Scene {
     party.add(this.add.text(125, 80, '阿心', { fontFamily: FONT, fontSize: '22px', fontStyle: 'bold', color: '#17343b' }));
     this.focusText = this.add.text(125, 118, '', { fontFamily: FONT, fontSize: '19px', color: '#248b84' });
     party.add(this.focusText);
-    party.add(bodyText(this, 28, 177, '移动或点击场地，躲开红色预警。\n\n按 1–4 或点击技能连接证据。\n\n答错可重试，不扣分。', 192, 17));
+    party.add(bodyText(this, 28, 177, this.touchMode
+      ? '拖动左下摇杆或点击场地，躲开红色预警。\n\n直接点击技能连接证据。\n\n答错可重试，不扣分。'
+      : '移动或点击场地，躲开红色预警。\n\n按 1–4 或点击技能连接证据。\n\n答错可重试，不扣分。', 192, 17));
     this.updateFocus();
 
     const evidence = panel(this, 1010, 150, 250, 410, COLORS.paper, 0.98, 8);
@@ -167,14 +175,24 @@ export class BattleScene extends Phaser.Scene {
     this.keys = this.input.keyboard!.addKeys('W,A,S,D,ONE,TWO,THREE,FOUR') as Record<string, Phaser.Input.Keyboard.Key>;
   }
 
+  private createTouchControls(): void {
+    if (!this.touchMode) return;
+    this.touchJoystick = new TouchJoystick(this, 104, 625, 54, 30);
+  }
+
   update(time: number): void {
     if (!this.player || !this.keys) return;
+    this.touchJoystick?.setVisible(!this.pausedForQuestion);
     if (this.pausedForQuestion) {
       this.player.setVelocity(0);
       return;
     }
-    const dx = Number(this.keys.D.isDown || this.cursors.right.isDown) - Number(this.keys.A.isDown || this.cursors.left.isDown);
-    const dy = Number(this.keys.S.isDown || this.cursors.down.isDown) - Number(this.keys.W.isDown || this.cursors.up.isDown);
+    const keyX = Number(this.keys.D.isDown || this.cursors.right.isDown) - Number(this.keys.A.isDown || this.cursors.left.isDown);
+    const keyY = Number(this.keys.S.isDown || this.cursors.down.isDown) - Number(this.keys.W.isDown || this.cursors.up.isDown);
+    const touchVector = this.touchJoystick?.vector;
+    const usingJoystick = Boolean(touchVector && touchVector.lengthSq() > 0);
+    const dx = usingJoystick ? touchVector!.x : keyX;
+    const dy = usingJoystick ? touchVector!.y : keyY;
     const velocity = new Phaser.Math.Vector2(dx, dy).normalize().scale(185);
     if (dx !== 0 || dy !== 0) {
       this.moveTarget = undefined;

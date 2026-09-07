@@ -14,6 +14,10 @@ html, body, #app {
   height: 100%;
   margin: 0;
   overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 body {
@@ -48,6 +52,29 @@ body {
 }
 
 body.game-ready #loading { display: none; }
+
+#orientation-hint { display: none; }
+
+@media (orientation: portrait) and (pointer: coarse) {
+  #orientation-hint {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: max(24px, env(safe-area-inset-top)) 24px max(24px, env(safe-area-inset-bottom));
+    background: rgba(8, 38, 48, .96);
+    color: #fff4d6;
+    text-align: center;
+  }
+
+  #orientation-hint span { font-size: 64px; color: #79ded0; }
+  #orientation-hint strong { font-size: 24px; }
+  #orientation-hint small { max-width: 18em; font-size: 15px; line-height: 1.6; color: #bfe8df; }
+}
 
 @media (max-width: 760px) {
   #app canvas { box-shadow: none; }

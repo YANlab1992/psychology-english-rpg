@@ -38,7 +38,8 @@ const config: Phaser.Types.Core.GameConfig = {
   input: {
     keyboard: true,
     mouse: true,
-    touch: true
+    touch: true,
+    activePointers: 3
   },
   scene: [BootScene, MenuScene, IntroScene, CampusScene, DiagnosticScene, BattleScene, EndingScene]
 };
