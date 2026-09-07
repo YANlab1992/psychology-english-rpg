@@ -15,7 +15,10 @@ export class BattleScene extends Phaser.Scene {
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private used = new Set<string>();
   private pausedForQuestion = false;
+  private questionOpen = false;
   private nextHazardAt = 0;
+  private hazardCount = 0;
+  private hazardLabel = '干扰预警';
   private hpBar!: Phaser.GameObjects.Rectangle;
   private focusText!: Phaser.GameObjects.Text;
   private claimText!: Phaser.GameObjects.Text;
@@ -38,6 +41,7 @@ export class BattleScene extends Phaser.Scene {
     this.save.battleSkillsUsed = [];
     this.save.focusHits = 0;
     this.used.clear();
+    this.hazardCount = 0;
     this.drawArenaV2();
     this.createActors();
     this.createHud();
@@ -45,7 +49,7 @@ export class BattleScene extends Phaser.Scene {
     this.createTouchControls();
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
       if (this.touchJoystick?.owns(pointer)) return;
-      if (this.pausedForQuestion || !this.arena.contains(pointer.worldX, pointer.worldY)) return;
+      if (this.pausedForQuestion || this.questionOpen || !this.arena.contains(pointer.worldX, pointer.worldY)) return;
       this.moveTarget = new Phaser.Math.Vector2(pointer.worldX, pointer.worldY);
     });
     this.showOpening();
@@ -147,8 +151,8 @@ export class BattleScene extends Phaser.Scene {
     this.focusText = this.add.text(125, 118, '', { fontFamily: FONT, fontSize: '19px', color: '#248b84' });
     party.add(this.focusText);
     party.add(bodyText(this, 28, 177, this.touchMode
-      ? '拖动左下摇杆或点击场地，躲开红色预警。\n\n直接点击技能连接证据。\n\n答错可重试，不扣分。'
-      : '移动或点击场地，躲开红色预警。\n\n按 1–4 或点击技能连接证据。\n\n答错可重试，不扣分。', 192, 17));
+      ? '拖动左下摇杆或点击场地，躲开位置锁定。\n\n直接点击技能；答题时战斗继续。\n\n答错可重试，不扣分。'
+      : '移动或点击场地，躲开位置锁定。\n\n按 1–4 或点击技能；答题时战斗继续。\n\n答错可重试，不扣分。', 192, 17));
     this.updateFocus();
 
     const evidence = panel(this, 1010, 150, 250, 410, COLORS.paper, 0.98, 8);
@@ -210,11 +214,12 @@ export class BattleScene extends Phaser.Scene {
       if (Phaser.Input.Keyboard.JustDown(key)) this.useSkill(this.content.battleSkills[i]);
     });
     if (time >= this.nextHazardAt) {
-      this.nextHazardAt = time + 2300;
       this.spawnHazard();
+      const interval = Math.max(1550, 2250 - this.used.size * 140 - (this.questionOpen ? 250 : 0));
+      this.nextHazardAt = time + interval;
     }
     const seconds = Math.max(0, (this.nextHazardAt - time) / 1000);
-    this.timerText?.setText(`干扰预警\n${seconds.toFixed(1)}s`);
+    this.timerText?.setText(`${this.hazardLabel}\n${seconds.toFixed(1)}s`);
   }
 
   private showOpening(): void {
@@ -222,7 +227,7 @@ export class BattleScene extends Phaser.Scene {
     const overlay = panel(this, 235, 218, 810, 270, COLORS.paper, 1, 40);
     overlay.add(heading(this, 42, 30, '证据交锋', 34));
     overlay.add(bodyText(this, 45, 88,
-      '读心怪会不断抛出“想当然”的说法。移动躲避干扰，并使用四种学术动作，把主张拉回证据能够支持的范围。',
+      '读心怪的红圈多数会锁定你当前的位置，有时还会预判移动方向。选择证据时战斗不会暂停：保持移动，把主张拉回证据能够支持的范围。',
       710, 22));
     overlay.add(button(this, 660, 220, 220, 48, '开始交锋', COLORS.teal, () => {
       overlay.destroy(true);
@@ -232,14 +237,31 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private spawnHazard(): void {
-    const x = Phaser.Math.Snap.To(Phaser.Math.Between(this.arena.left + 45, this.arena.right - 45), 70);
-    const y = Phaser.Math.Snap.To(Phaser.Math.Between(this.arena.top + 45, this.arena.bottom - 45), 60);
+    this.hazardCount += 1;
+    const margin = 52;
+    const randomStrike = this.hazardCount % 4 === 0;
+    const predictiveStrike = !randomStrike && this.hazardCount % 3 === 0;
+    const body = this.player.body instanceof Phaser.Physics.Arcade.Body ? this.player.body : undefined;
+    const leadSeconds = predictiveStrike ? 0.38 : 0;
+    const rawX = randomStrike
+      ? Phaser.Math.Between(this.arena.left + margin, this.arena.right - margin)
+      : this.player.x + (body?.velocity.x ?? 0) * leadSeconds + Phaser.Math.Between(-12, 12);
+    const rawY = randomStrike
+      ? Phaser.Math.Between(this.arena.top + margin, this.arena.bottom - margin)
+      : this.player.y + (body?.velocity.y ?? 0) * leadSeconds + Phaser.Math.Between(-12, 12);
+    const x = Phaser.Math.Clamp(Phaser.Math.Snap.To(rawX, 10), this.arena.left + margin, this.arena.right - margin);
+    const y = Phaser.Math.Clamp(Phaser.Math.Snap.To(rawY, 10), this.arena.top + margin, this.arena.bottom - margin);
+    this.hazardLabel = randomStrike ? '随机干扰' : predictiveStrike ? '预判锁定' : '位置锁定';
     const warning = this.add.circle(x, y, 42, COLORS.coral, 0.18).setStrokeStyle(5, COLORS.coral, 0.9).setDepth(4);
     const inner = this.add.circle(x, y, 25, COLORS.coral, 0.08).setStrokeStyle(2, COLORS.coral, 0.7).setDepth(4);
-    const mark = this.add.text(x, y, '!', { fontFamily: FONT, fontSize: '30px', fontStyle: 'bold', color: '#b94238' })
+    const mark = this.add.text(x, y, randomStrike ? '!' : '◎', { fontFamily: FONT, fontSize: '30px', fontStyle: 'bold', color: '#b94238' })
       .setOrigin(0.5).setDepth(5);
     this.tweens.add({ targets: [warning, inner, mark], alpha: 0.45, scale: { from: 0.72, to: 1.08 }, duration: 180, yoyo: true, repeat: 4 });
     this.time.delayedCall(1050, () => {
+      if (this.pausedForQuestion) {
+        warning.destroy(); inner.destroy(); mark.destroy();
+        return;
+      }
       const hit = Phaser.Math.Distance.Between(this.player.x, this.player.y, x, y) < 57;
       warning.setFillStyle(COLORS.coral, 0.85).setScale(1.25);
       inner.setFillStyle(0xfff4d6, 0.75).setScale(1.4);
@@ -256,38 +278,46 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private useSkill(skill: BattleSkillContent): void {
-    if (this.pausedForQuestion || this.used.has(skill.id)) return;
-    this.pausedForQuestion = true;
+    if (this.pausedForQuestion || this.questionOpen || this.used.has(skill.id)) return;
+    this.questionOpen = true;
     this.claimText.setText(skill.claim);
-    const overlay = panel(this, 200, 145, 880, 455, COLORS.paper, 1, 40);
-    overlay.add(this.add.text(45, 28, `${skill.name} ${skill.en}`, {
+    const panelX = this.player.x < 640 ? 610 : 20;
+    const overlay = panel(this, panelX, 145, 650, 455, COLORS.paper, 0.96, 40);
+    overlay.add(this.add.text(30, 28, `${skill.name} ${skill.en}`, {
       fontFamily: FONT, fontSize: '27px', fontStyle: 'bold', color: skill.color
     }));
-    overlay.add(bodyText(this, 45, 82, skill.prompt, 780, 23));
+    overlay.add(this.add.text(610, 35, '战斗继续 · KEEP MOVING', {
+      fontFamily: FONT, fontSize: '13px', fontStyle: 'bold', color: '#b5543c'
+    }).setOrigin(1, 0));
+    overlay.add(bodyText(this, 30, 82, skill.prompt, 590, 21));
     skill.options.forEach((option, i) => {
-      overlay.add(button(this, 440, 185 + i * 72, 760, 52, `${String.fromCharCode(65 + i)}. ${option}`,
+      overlay.add(button(this, 325, 185 + i * 72, 580, 52, `${String.fromCharCode(65 + i)}. ${option}`,
         i % 2 ? COLORS.teal : COLORS.blue,
         () => this.resolveSkill(overlay, skill, i),
-        { depth: 42, fontSize: 17 }));
+        { depth: 42, fontSize: 16 }));
     });
   }
 
   private resolveSkill(overlay: Phaser.GameObjects.Container, skill: BattleSkillContent, selected: number): void {
-    overlay.removeAll(true);
+    this.questionOpen = false;
+    this.pausedForQuestion = true;
+    overlay.destroy(true);
     const correct = selected === skill.answer;
+    const resultOverlay = panel(this, 230, 190, 820, 340, correct ? 0xe8f7e9 : 0xffefdf, 1, 45);
     const title = heading(this, 45, 40, correct ? '证据命中！' : '证据还没有连接上', 32,
       correct ? '#287b49' : '#b5543c');
     const feedback = bodyText(this, 48, 105, correct ? skill.success : skill.retry, 760, 22);
     const next = button(this, 690, 385, 190, 50, correct ? '继续战斗' : '重新判断',
       correct ? COLORS.green : COLORS.coral,
       () => {
-        overlay.destroy(true);
+        resultOverlay.destroy(true);
         this.pausedForQuestion = false;
+        this.nextHazardAt = this.time.now + 900;
         if (correct) this.applyDamage(skill);
       },
       { depth: 42, fontSize: 19 }
     );
-    overlay.add([title, feedback, next]);
+    resultOverlay.add([title, feedback, next]);
   }
 
   private applyDamage(skill: BattleSkillContent): void {

@@ -101,9 +101,9 @@
       "observation": "一名学生收到通知后停下脚步、皱眉，并把手机放进口袋。",
       "prompt": "Which item is directly observable behavior?",
       "options": [
-        "The student feels secretly disappointed.",
+        "The student feels disappointed by the message.",
         "The student puts the phone into a pocket.",
-        "The student will remember this forever."
+        "The student remembers the message for many years."
       ],
       "answer": 1,
       "success": "正确。动作可以直接记录；内在感受需要借助报告或其他测量。",
@@ -131,9 +131,9 @@
       "observation": "研究者提出问题、形成可检验假设，并按统一程序收集两组数据。",
       "prompt": "Why is this procedure scientific?",
       "options": [
-        "It sounds surprising.",
-        "It uses a testable question and systematic evidence.",
-        "It guarantees that every result is true."
+        "It presents a surprising question and conclusion.",
+        "It collects systematic evidence for a testable question.",
+        "It guarantees a completely true result every time."
       ],
       "answer": 1,
       "success": "正确。科学方法依靠可检验问题、透明程序和系统证据，而不是保证永远正确。",
@@ -145,10 +145,10 @@
       "id": "d1",
       "prompt": "Which definition best matches psychology?",
       "options": [
-        "The ability to read hidden thoughts",
+        "The scientific reading of hidden private thoughts",
         "The scientific study of behavior and mental processes",
-        "A collection of advice about personality",
-        "The study of the brain only"
+        "The practical study of personality advice and tips",
+        "The scientific study of brain structures and functions"
       ],
       "answer": 1,
       "feedback": "Psychology studies both observable behavior and mental processes through scientific methods.",
@@ -158,10 +158,10 @@
       "id": "d2",
       "prompt": "Which action is the best example of an empirical method?",
       "options": [
-        "Trusting a popular saying",
-        "Guessing from one personal story",
-        "Collecting observations with a stated procedure",
-        "Choosing the most surprising explanation"
+        "Accepting popular beliefs without collecting relevant observations",
+        "Explaining behavior from one memorable personal experience",
+        "Recording observations through a clearly stated procedure",
+        "Selecting explanations mainly because they sound surprising"
       ],
       "answer": 2,
       "feedback": "Empirical claims rely on observations or data collected with a transparent method.",
@@ -171,10 +171,10 @@
       "id": "d3",
       "prompt": "Choose the logical order of a simple scientific investigation.",
       "options": [
-        "Conclusion → question → evidence",
+        "Conclusion → question → opinion → evidence",
         "Question → hypothesis → test → conclusion",
-        "Opinion → repetition → truth",
-        "Prediction → popularity → explanation"
+        "Opinion → repetition → agreement → truth",
+        "Prediction → popularity → confidence → explanation"
       ],
       "answer": 1,
       "feedback": "A conclusion should follow a question, a testable hypothesis and evidence.",
@@ -184,10 +184,10 @@
       "id": "d4",
       "prompt": "Which sentence makes an appropriately limited claim?",
       "options": [
-        "Psychologists always know what people think.",
-        "One result proves every theory about the mind.",
+        "Psychologists can always identify thoughts in every person.",
+        "One result confirms every theory about the human mind.",
         "This study suggests an association under these conditions.",
-        "All behavior has one simple cause."
+        "Every human behavior results from only one simple cause."
       ],
       "answer": 2,
       "feedback": "Academic English often qualifies a claim with words such as suggests and under these conditions.",
@@ -204,9 +204,9 @@
       "claim": "“心理学就是读心术！”",
       "prompt": "Which evidence card gives the strongest definition?",
       "options": [
-        "Psychology predicts every private thought.",
+        "Psychology accurately predicts behavior and every private thought.",
         "Psychology scientifically studies behavior and mental processes.",
-        "Psychology is whatever a psychologist believes."
+        "Psychology records whatever a trained psychologist personally believes."
       ],
       "answer": 1,
       "success": "定义准确！“读心术”不能替代科学定义。",
@@ -221,9 +221,9 @@
       "claim": "“我感觉它是真的，所以它就是真的！”",
       "prompt": "What should a scientific response ask for first?",
       "options": [
-        "A systematic observation or test",
-        "A more confident speaker",
-        "A more dramatic story"
+        "A systematic observation using a stated test procedure",
+        "A confident explanation using a persuasive speaking style",
+        "A dramatic anecdote using a memorable personal story"
       ],
       "answer": 0,
       "success": "观察有效！个人确信不等于实证证据。",
@@ -238,9 +238,9 @@
       "claim": "“一次猜中，就证明每次都能猜中！”",
       "prompt": "Which comparison tests this claim better?",
       "options": [
-        "Remember only successful guesses",
-        "Compare accuracy across many controlled trials with chance",
-        "Ask whether the guess felt impressive"
+        "Review successful guesses across several selected examples",
+        "Compare accuracy with chance across many controlled trials",
+        "Rate each guess by how impressive it feels"
       ],
       "answer": 1,
       "success": "比较成立！多次受控试验才能判断表现是否超过机会水平。",
@@ -255,9 +255,9 @@
       "claim": "“一个结果可以解释所有人！”",
       "prompt": "Which wording is appropriately cautious?",
       "options": [
-        "This proves the claim for everyone forever.",
-        "The finding suggests a pattern under the tested conditions.",
-        "No limitation needs to be discussed."
+        "This single result proves the claim for everyone.",
+        "The finding suggests a pattern under tested conditions.",
+        "This clear result requires no discussion of limitations."
       ],
       "answer": 1,
       "success": "限定成功！结论回到了证据能够支持的范围。",
