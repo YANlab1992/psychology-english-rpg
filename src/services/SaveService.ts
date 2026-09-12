@@ -1,13 +1,23 @@
-import type { SaveData } from '../types';
+import type { Chapter1Save, SaveData } from '../types';
 
 const DB_NAME = 'psychology-english-rpg';
 const STORE_NAME = 'saves';
 const SAVE_KEY = 'prologue';
 const FALLBACK_KEY = 'psy-rpg-prologue-save';
 
+function freshChapter1(): Chapter1Save {
+  return {
+    completedStations: [],
+    unlockedTerms: [],
+    answers: [],
+    battleSkillsUsed: [],
+    focusHits: 0
+  };
+}
+
 function freshSave(): SaveData {
   return {
-    version: 2,
+    version: 3,
     stage: 'intro',
     talkedToProfessor: false,
     talkedToAllies: [],
@@ -17,6 +27,7 @@ function freshSave(): SaveData {
     battleSkillsUsed: [],
     focusHits: 0,
     evidenceAttempts: 0,
+    chapter1: freshChapter1(),
     updatedAt: new Date().toISOString()
   };
 }
@@ -27,13 +38,22 @@ function normalizeSave(value?: Partial<SaveData>): SaveData {
   const migrated: SaveData = {
     ...base,
     ...value,
-    version: 2,
+    version: 3,
     talkedToAllies: Array.isArray(value.talkedToAllies) ? value.talkedToAllies : [],
     collectedEvidence: Array.isArray(value.collectedEvidence) ? value.collectedEvidence : [],
     unlockedTerms: Array.isArray(value.unlockedTerms) ? value.unlockedTerms : [],
     diagnostic: Array.isArray(value.diagnostic) ? value.diagnostic : [],
     battleSkillsUsed: Array.isArray(value.battleSkillsUsed) ? value.battleSkillsUsed : [],
-    evidenceAttempts: value.evidenceAttempts ?? 0
+    evidenceAttempts: value.evidenceAttempts ?? 0,
+    chapter1: {
+      ...freshChapter1(),
+      ...(value.chapter1 ?? {}),
+      completedStations: Array.isArray(value.chapter1?.completedStations) ? value.chapter1.completedStations : [],
+      unlockedTerms: Array.isArray(value.chapter1?.unlockedTerms) ? value.chapter1.unlockedTerms : [],
+      answers: Array.isArray(value.chapter1?.answers) ? value.chapter1.answers : [],
+      battleSkillsUsed: Array.isArray(value.chapter1?.battleSkillsUsed) ? value.chapter1.battleSkillsUsed : [],
+      focusHits: value.chapter1?.focusHits ?? 0
+    }
   };
   // 兼容序幕原型存档：已经取证的玩家视为完成伙伴教程。
   if (migrated.collectedEvidence.length > 0 && migrated.talkedToAllies.length === 0) {
@@ -94,6 +114,14 @@ class SaveService {
 
   async reset(): Promise<SaveData> {
     const data = freshSave();
+    await this.save(data);
+    return data;
+  }
+
+  async startChapter1(current?: SaveData): Promise<SaveData> {
+    const data = current ? normalizeSave(current) : await this.load();
+    data.stage = 'chapter1_intro';
+    data.chapter1 = freshChapter1();
     await this.save(data);
     return data;
   }

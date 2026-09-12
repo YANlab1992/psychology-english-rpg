@@ -1,11 +1,12 @@
 import Phaser from 'phaser';
-import type { PrologueContent, SaveData } from '../types';
+import type { Chapter1Content, PrologueContent, SaveData } from '../types';
 import { saves } from '../services/SaveService';
 import { badge, button, COLORS, FONT, heading, panel, bodyText } from '../ui/theme';
 
 export class MenuScene extends Phaser.Scene {
   private save!: SaveData;
   private content!: PrologueContent;
+  private chapter1!: Chapter1Content;
   private modal?: Phaser.GameObjects.Container;
 
   constructor() {
@@ -14,6 +15,7 @@ export class MenuScene extends Phaser.Scene {
 
   create(): void {
     this.content = this.registry.get('content') as PrologueContent;
+    this.chapter1 = this.registry.get('chapter1-content') as Chapter1Content;
     this.save = this.registry.get('save') as SaveData;
     this.drawKeyArt();
     this.drawTitle();
@@ -101,7 +103,7 @@ export class MenuScene extends Phaser.Scene {
       fontSize: '18px',
       color: '#cf5d4f'
     }).setDepth(7);
-    badge(this, 461, 21, 'CHAPTER 00', COLORS.coral, 9);
+    badge(this, 446, 21, 'CHAPTER 00–01', COLORS.coral, 9);
   }
 
   private drawCharacters(): void {
@@ -122,14 +124,13 @@ export class MenuScene extends Phaser.Scene {
 
   private drawMenu(): void {
     const x = 245;
-    button(this, x, 284, 390, 66, '开始新游戏', COLORS.gold, async () => {
-      this.save = await saves.reset();
-      this.registry.set('save', this.save);
-      this.scene.start('Intro');
-    }, { icon: '▶', fontSize: 25 });
+    button(this, x, 284, 390, 66, '开始游戏 / 章节选择', COLORS.gold, () => this.showChapterSelect(),
+      { icon: '▶', fontSize: 23 });
 
     const stageLabel: Record<SaveData['stage'], string> = {
-      intro: '序幕故事', campus: '校园取证', diagnostic: '无惩罚摸底', battle: '证据战', complete: '序幕总结'
+      intro: '序幕故事', campus: '校园取证', diagnostic: '无惩罚摸底', battle: '序幕证据战', complete: '序幕总结',
+      chapter1_intro: '第一章导入', chapter1_hub: '第一章科学地图',
+      chapter1_battle: '第一章可信度审议', chapter1_complete: '第一章总结'
     };
     button(this, x, 366, 390, 62, `继续 · ${stageLabel[this.save.stage]}`, COLORS.teal, () => this.continueGame(), {
       icon: '◆', fontSize: 24
@@ -145,8 +146,9 @@ export class MenuScene extends Phaser.Scene {
   private drawProgress(): void {
     const p = panel(this, 52, 612, 1176, 76, COLORS.paper, 0.97, 7);
     (p.list[2] as Phaser.GameObjects.GameObject & { setVisible: (visible: boolean) => unknown }).setVisible(false);
-    const stages = ['故事', '校园', '摸底', '证据战', '完成'];
-    const current = ['intro', 'campus', 'diagnostic', 'battle', 'complete'].indexOf(this.save.stage);
+    const stages = ['序幕', '科学方法', '研究范围', '三维魔方', '可信度'];
+    const chapterProgress = this.save.chapter1.completedStations.length;
+    const current = this.save.stage.startsWith('chapter1') ? Math.min(4, chapterProgress + 1) : 0;
     stages.forEach((stage, i) => {
       const x = 145 + i * 235;
       this.add.circle(x, 650, 16, i <= current ? COLORS.teal : 0xb3c1b5).setDepth(8);
@@ -161,22 +163,100 @@ export class MenuScene extends Phaser.Scene {
 
   private continueGame(): void {
     const target: Record<SaveData['stage'], string> = {
-      intro: 'Intro', campus: 'Campus', diagnostic: 'Diagnostic', battle: 'Battle', complete: 'Ending'
+      intro: 'Intro', campus: 'Campus', diagnostic: 'Diagnostic', battle: 'Battle', complete: 'Ending',
+      chapter1_intro: 'Chapter1Intro', chapter1_hub: 'Chapter1Hub',
+      chapter1_battle: 'Chapter1Battle', chapter1_complete: 'Chapter1Ending'
     };
     this.scene.start(target[this.save.stage]);
+  }
+
+  private showChapterSelect(): void {
+    if (this.modal) return;
+    this.modal = panel(this, 145, 72, 990, 575, COLORS.paper, 0.995, 50);
+    this.modal.add(heading(this, 48, 30, '选择游戏入口', 38).setDepth(51));
+    this.modal.add(bodyText(this, 50, 82,
+      '“从头开始”会清空当前本地进度；章节游玩可直接进入指定章节，并保留其他章节记录。',
+      875, 18).setDepth(51));
+
+    const full = panel(this, 48, 143, 894, 105, 0xfff1c8, 1, 51);
+    full.add(this.add.text(35, 20, '从头开始', {
+      fontFamily: FONT, fontSize: '25px', fontStyle: 'bold', color: '#71391f'
+    }));
+    full.add(this.add.text(35, 59, '序章 → 第一章，按主线连续游玩', {
+      fontFamily: FONT, fontSize: '17px', color: '#31525a'
+    }));
+    full.add(button(this, 755, 52, 220, 54, '开始完整旅程', COLORS.gold, () => void this.startFromBeginning(), {
+      depth: 53, fontSize: 19, icon: '▶'
+    }));
+
+    this.modal.add(this.add.text(50, 278, '特定章节游玩', {
+      fontFamily: FONT, fontSize: '20px', fontStyle: 'bold', color: '#248b84'
+    }));
+    const prologue = panel(this, 48, 320, 420, 150, COLORS.paper, 1, 51);
+    prologue.add(badge(this, 78, 32, 'CHAPTER 00', COLORS.coral, 52));
+    prologue.add(this.add.text(28, 58, '序幕：心理学真的会读心吗？', {
+      fontFamily: FONT, fontSize: '19px', fontStyle: 'bold', color: '#17343b'
+    }));
+    prologue.add(this.add.text(28, 91, '定义 · 取证 · 无惩罚摸底', {
+      fontFamily: FONT, fontSize: '15px', color: '#73969a'
+    }));
+    prologue.add(button(this, 320, 118, 160, 42, '进入序幕', COLORS.coral, () => void this.startPrologue(), {
+      depth: 53, fontSize: 16
+    }));
+
+    const chapter = panel(this, 522, 320, 420, 150, 0xeaf6ef, 1, 51);
+    chapter.add(badge(this, 78, 32, 'CHAPTER 01', COLORS.green, 52));
+    chapter.add(this.add.text(28, 58, this.chapter1.title, {
+      fontFamily: FONT, fontSize: '19px', fontStyle: 'bold', color: '#17343b'
+    }));
+    chapter.add(this.add.text(28, 91, '科学地图 · 三维魔方 · 证据审议', {
+      fontFamily: FONT, fontSize: '15px', color: '#73969a'
+    }));
+    chapter.add(button(this, 320, 118, 160, 42, '进入第一章', COLORS.green, () => void this.startChapter1(), {
+      depth: 53, fontSize: 16
+    }));
+    this.modal.add(button(this, 865, 530, 150, 40, '取消', COLORS.muted, () => this.closeModal(), {
+      depth: 53, fontSize: 16
+    }));
+  }
+
+  private async startFromBeginning(): Promise<void> {
+    this.save = await saves.reset();
+    this.registry.set('save', this.save);
+    this.scene.start('Intro');
+  }
+
+  private async startPrologue(): Promise<void> {
+    const chapter1Record = this.save.chapter1;
+    this.save = await saves.reset();
+    this.save.chapter1 = chapter1Record;
+    await saves.save(this.save);
+    this.registry.set('save', this.save);
+    this.scene.start('Intro');
+  }
+
+  private async startChapter1(): Promise<void> {
+    this.save = await saves.startChapter1(this.save);
+    this.registry.set('save', this.save);
+    this.scene.start('Chapter1Intro');
   }
 
   private showArchive(): void {
     if (this.modal) return;
     this.modal = panel(this, 190, 95, 900, 530, COLORS.paper, 0.99, 50);
     this.modal.add(heading(this, 45, 30, '学习档案', 36).setDepth(51));
-    const terms = this.content.terms.filter((term) => this.save.unlockedTerms.includes(term.id));
+    const prologueTerms = this.content.terms.filter((term) => this.save.unlockedTerms.includes(term.id));
+    const chapterTerms = this.chapter1.stations.flatMap((station) => station.terms)
+      .filter((term) => this.save.chapter1.unlockedTerms.includes(term.id));
+    const terms = [...prologueTerms, ...chapterTerms];
     const summary = terms.length
-      ? terms.map((term) => `◆ ${term.en}　${term.zh}\n   ${term.note}`).join('\n\n')
-      : '尚未收集术语。开始序幕后，在校园中调查发光证据。';
+      ? terms.slice(0, 8).map((term) => `◆ ${term.en}　${term.zh}\n   ${term.note}`).join('\n\n')
+      : '尚未收集术语。可从章节选择进入序幕或第一章。';
     this.modal.add(bodyText(this, 48, 95, summary, 800, 21).setDepth(51));
     const correct = this.save.diagnostic.filter((r) => r.correct).length;
-    this.modal.add(this.add.text(48, 444, `现场取证 ${this.save.collectedEvidence.length}/3　摸底 ${correct}/${this.save.diagnostic.length}　技能 ${this.save.battleSkillsUsed.length}/4`, {
+    this.modal.add(this.add.text(48, 444,
+      `序幕取证 ${this.save.collectedEvidence.length}/3　摸底 ${correct}/${this.save.diagnostic.length}` +
+      `　第一章学习站 ${this.save.chapter1.completedStations.length}/4`, {
       fontFamily: FONT, fontSize: '17px', fontStyle: 'bold', color: '#248b84'
     }));
     this.modal.add(button(this, 780, 475, 160, 48, '关闭', COLORS.coral, () => this.closeModal(), { depth: 52 }));
@@ -193,6 +273,7 @@ export class MenuScene extends Phaser.Scene {
       '冲刺：Shift',
       '学习档案：Tab',
       '证据战：移动躲避干扰，数字键 1–4 或点击技能',
+      '第一章：调查四个学习站，再进入可信度审议战',
       '',
       '这是无惩罚序幕。答错会得到分层提示，不会降低课程成绩。'
     ].join('\n');

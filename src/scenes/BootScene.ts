@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import type { PrologueContent } from '../types';
+import type { Chapter1Content, PrologueContent } from '../types';
 import { saves } from '../services/SaveService';
 import { makePixelCharacterTexture, makeQCharacterTextures, COLORS } from '../ui/theme';
 
@@ -10,6 +10,7 @@ export class BootScene extends Phaser.Scene {
 
   preload(): void {
     this.load.json('prologue-content', './content/prologue.json');
+    this.load.json('chapter1-content', './content/chapter1.json');
     this.load.image('bg-menu-v2', './assets/art/menu-keyart-v2.png');
     this.load.image('bg-campus-v2', './assets/art/campus-map-v2.png');
     this.load.image('bg-battle-v2', './assets/art/evidence-hall-v2.png');
@@ -29,13 +30,18 @@ export class BootScene extends Phaser.Scene {
     makePixelCharacterTexture(this, 'char-professor', 0x6b5547, 0xe8e3d9, 'book');
 
     const content = this.cache.json.get('prologue-content') as PrologueContent;
+    const chapter1 = this.cache.json.get('chapter1-content') as Chapter1Content;
     const save = await saves.load();
     this.registry.set('content', content);
+    this.registry.set('chapter1-content', chapter1);
     this.registry.set('save', save);
     document.body.classList.add('game-ready');
     const localPreview = ['127.0.0.1', 'localhost'].includes(window.location.hostname);
     const preview = localPreview ? new URLSearchParams(window.location.search).get('scene') : null;
-    const previewScenes = new Set(['Menu', 'Intro', 'Campus', 'Diagnostic', 'Battle', 'Ending']);
+    const previewScenes = new Set([
+      'Menu', 'Intro', 'Campus', 'Diagnostic', 'Battle', 'Ending',
+      'Chapter1Intro', 'Chapter1Hub', 'Chapter1Battle', 'Chapter1Ending'
+    ]);
     this.scene.start(preview && previewScenes.has(preview) ? preview : 'Menu');
   }
 }

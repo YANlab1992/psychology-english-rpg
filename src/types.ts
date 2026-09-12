@@ -57,6 +57,43 @@ export interface PrologueContent {
   battleSkills: BattleSkillContent[];
 }
 
+export interface ChapterQuestion {
+  id: string;
+  prompt: string;
+  options: string[];
+  answer: number;
+  feedback: string;
+  hint: string;
+}
+
+export interface ChapterLessonPage {
+  heading: string;
+  en: string;
+  zh: string;
+  focus: string;
+}
+
+export interface ChapterStation {
+  id: string;
+  title: string;
+  en: string;
+  icon: string;
+  color: string;
+  location: string;
+  pages: ChapterLessonPage[];
+  terms: TermEntry[];
+  challenges: ChapterQuestion[];
+}
+
+export interface Chapter1Content {
+  title: string;
+  subtitle: string;
+  story: Array<{ heading: string; body: string; tag: string }>;
+  stations: ChapterStation[];
+  battleSkills: BattleSkillContent[];
+  reviewSentence: string;
+}
+
 export interface DiagnosticRecord {
   questionId: string;
   selected: number;
@@ -64,9 +101,29 @@ export interface DiagnosticRecord {
   responseMs: number;
 }
 
+export interface ChapterAnswerRecord {
+  questionId: string;
+  selected: number;
+  correct: boolean;
+  attempts: number;
+}
+
+export interface Chapter1Save {
+  completedStations: string[];
+  unlockedTerms: string[];
+  answers: ChapterAnswerRecord[];
+  battleSkillsUsed: string[];
+  focusHits: number;
+  completedAt?: string;
+}
+
+export type GameStage =
+  | 'intro' | 'campus' | 'diagnostic' | 'battle' | 'complete'
+  | 'chapter1_intro' | 'chapter1_hub' | 'chapter1_battle' | 'chapter1_complete';
+
 export interface SaveData {
-  version: 2;
-  stage: 'intro' | 'campus' | 'diagnostic' | 'battle' | 'complete';
+  version: 3;
+  stage: GameStage;
   talkedToProfessor: boolean;
   talkedToAllies: string[];
   collectedEvidence: string[];
@@ -75,6 +132,7 @@ export interface SaveData {
   battleSkillsUsed: string[];
   focusHits: number;
   evidenceAttempts: number;
+  chapter1: Chapter1Save;
   completedAt?: string;
   updatedAt: string;
 }

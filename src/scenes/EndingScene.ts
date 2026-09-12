@@ -78,13 +78,17 @@ export class EndingScene extends Phaser.Scene {
     card.add(button(this, 180, 520, 250, 54, '导出学习报告', COLORS.blue, () => saves.export(this.save), {
       depth: 12, fontSize: 20
     }));
-    card.add(button(this, 510, 520, 250, 54, '返回主菜单', COLORS.teal, () => this.scene.start('Menu'), {
+    card.add(button(this, 510, 520, 250, 54, '进入第一章', COLORS.green, () => void this.enterChapter1(), {
       depth: 12, fontSize: 20
     }));
-    card.add(button(this, 840, 520, 250, 54, '重新体验', COLORS.coral, async () => {
-      const fresh = await saves.reset();
-      this.registry.set('save', fresh);
-      this.scene.start('Intro');
-    }, { depth: 12, fontSize: 20 }));
+    card.add(button(this, 840, 520, 250, 54, '章节选择', COLORS.coral, () => this.scene.start('Menu'), {
+      depth: 12, fontSize: 20
+    }));
+  }
+
+  private async enterChapter1(): Promise<void> {
+    const updated = await saves.startChapter1(this.save);
+    this.registry.set('save', updated);
+    this.scene.start('Chapter1Intro');
   }
 }

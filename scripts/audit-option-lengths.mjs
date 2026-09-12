@@ -1,10 +1,13 @@
 import { readFileSync } from 'node:fs';
 
 const content = JSON.parse(readFileSync(new URL('../public/content/prologue.json', import.meta.url), 'utf8'));
+const chapter1 = JSON.parse(readFileSync(new URL('../public/content/chapter1.json', import.meta.url), 'utf8'));
 const groups = [
   ...content.diagnostic.map((item) => ({ section: 'diagnostic', ...item })),
   ...content.evidenceChallenges.map((item) => ({ section: 'evidence', ...item })),
-  ...content.battleSkills.map((item) => ({ section: 'battle', ...item }))
+  ...content.battleSkills.map((item) => ({ section: 'battle', ...item })),
+  ...chapter1.stations.flatMap((station) => station.challenges.map((item) => ({ section: 'chapter1-' + station.id, ...item }))),
+  ...chapter1.battleSkills.map((item) => ({ section: 'chapter1-battle', ...item }))
 ];
 
 const countWords = (text) => (text.match(/[A-Za-z]+(?:[-'][A-Za-z]+)*/g) ?? []).length;

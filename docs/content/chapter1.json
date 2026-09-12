@@ -1,0 +1,307 @@
+{
+  "title": "第一章：科学心理学",
+  "subtitle": "Psychology as a Science",
+  "story": [
+    {
+      "tag": "MISSION 01",
+      "heading": "档案馆发出求援",
+      "body": "序幕的迷雾刚刚散去，校园研究档案却被“快餐论文怪”拆成了互不相连的碎片。只有重建心理学的科学地图，才能恢复档案。"
+    },
+    {
+      "tag": "SCIENCE",
+      "heading": "从问题走向证据",
+      "body": "心理学家提出问题、构建理论，再用严谨的实验室或现场研究检验假设；由研究获得的理解，会转化为改善生活的循证策略。"
+    },
+    {
+      "tag": "3 × 3 × 3",
+      "heading": "一座二十七格魔方",
+      "body": "组织水平、研究方法与研究视角构成三条轴线。三条轴线交叉，形成 27 个相互依存的心理学子领域。"
+    },
+    {
+      "tag": "CREDIBILITY",
+      "heading": "守住科学公信力",
+      "body": "新奇结果不等于可靠结果。独立重复检验与足够的统计效力，能帮助我们避开“错失真水”和“追逐海市蜃楼”。"
+    }
+  ],
+  "stations": [
+    {
+      "id": "method",
+      "title": "证据工坊",
+      "en": "Scientific Method",
+      "icon": "?",
+      "color": "#3d94c6",
+      "location": "心理实验中心",
+      "pages": [
+        {
+          "heading": "科学方法不是直觉表演",
+          "en": "Psychologists state a question, offer a theory, and construct rigorous experiments to test a hypothesis.",
+          "zh": "心理学家提出问题、构建理论，并设计严谨的实验室或现场实验来检验假设。",
+          "focus": "question → theory → testable hypothesis → evidence"
+        },
+        {
+          "heading": "证据还要回到现实",
+          "en": "Research produces evidence-based strategies that solve problems and improve lives.",
+          "zh": "研究产生循证策略，用于解决实际问题、促进身心健康并改善生活。",
+          "focus": "evidence-based = supported by systematic research"
+        }
+      ],
+      "terms": [
+        { "id": "hypothesis", "en": "hypothesis", "zh": "假设", "note": "能够通过观察或实验接受检验的具体预期。" },
+        { "id": "evidence_based", "en": "evidence-based", "zh": "循证的", "note": "由系统研究证据支持，而非只凭经验或权威。" }
+      ],
+      "challenges": [
+        {
+          "id": "ch1_method_order",
+          "prompt": "Which sequence best matches the textbook's scientific method?",
+          "options": [
+            "state a question → propose a theory → test a hypothesis",
+            "state a conclusion → collect opinions → defend a preference strongly",
+            "state a feeling → repeat examples → trust a prediction"
+          ],
+          "answer": 0,
+          "feedback": "科学结论要从可检验的问题与假设出发，再接受系统证据检验。",
+          "hint": "先找 question，再找 theory 与 hypothesis。"
+        },
+        {
+          "id": "ch1_method_evidence",
+          "prompt": "What makes a strategy evidence-based?",
+          "options": [
+            "It creates strategies supported by systematic research evidence",
+            "It creates advice supported by personal stories alone",
+            "It creates claims supported by confident language alone"
+          ],
+          "answer": 0,
+          "feedback": "Evidence-based strategies 建立在系统研究之上，并可用于改善现实生活。",
+          "hint": "区分 systematic research 与故事、语气。"
+        }
+      ]
+    },
+    {
+      "id": "scope",
+      "title": "心智观测台",
+      "en": "Scope and Goals",
+      "icon": "Ψ",
+      "color": "#e86c5d",
+      "location": "教育书院广场",
+      "pages": [
+        {
+          "heading": "心理学研究什么？",
+          "en": "Psychology explores behaviors and mental processes, from perception and emotion to brain functioning and personality.",
+          "zh": "心理学探索行为与心理过程，涵盖知觉、认知、注意、情绪、动机、脑功能与人格等领域。",
+          "focus": "behaviors + mental processes"
+        },
+        {
+          "heading": "四个层次的研究目标",
+          "en": "Its goals include description, explanation, prediction, and modification of behaviors.",
+          "zh": "心理学的科学目标包括描述、解释、预测和调控改变行为。",
+          "focus": "describe · explain · predict · modify"
+        }
+      ],
+      "terms": [
+        { "id": "mental_processes_ch1", "en": "mental processes", "zh": "心理过程", "note": "包括知觉、认知、注意、情绪、动机等内在过程。" },
+        { "id": "modification", "en": "modification", "zh": "调控与改变", "note": "心理学四大目标中指依据证据促进适应性改变。" }
+      ],
+      "challenges": [
+        {
+          "id": "ch1_scope_pair",
+          "prompt": "Which pair covers psychology's central subject matter?",
+          "options": [
+            "observable behavior and internal mental processes",
+            "private opinions and magical thought reading",
+            "personality advice and daily success tips"
+          ],
+          "answer": 0,
+          "feedback": "心理学既研究可观察行为，也研究可由科学方法探查的心理过程。",
+          "hint": "回想序幕的核心定义。"
+        },
+        {
+          "id": "ch1_scope_goals",
+          "prompt": "Which list gives the four scientific goals of psychology?",
+          "options": [
+            "describe, explain, predict, and modify behavior",
+            "observe, memorize, translate, and repeat behavior",
+            "guess, persuade, entertain, and simplify behavior"
+          ],
+          "answer": 0,
+          "feedback": "description、explanation、prediction 与 modification 构成逐步深入的目标链。",
+          "hint": "寻找从理解走向预测与改变的一组动词。"
+        }
+      ]
+    },
+    {
+      "id": "cube",
+      "title": "三维建图室",
+      "en": "The 27-Field Cube",
+      "icon": "3D",
+      "color": "#8466b3",
+      "location": "跨学科连廊",
+      "pages": [
+        {
+          "heading": "三条轴线，二十七个格子",
+          "en": "Cleeremans mapped psychology through Levels of Organization, Methods, and Perspectives.",
+          "zh": "克莱伦曼斯用组织水平、研究方法、研究视角三条轴线构建心理学三维地图。",
+          "focus": "3 levels × 3 methods × 3 perspectives = 27"
+        },
+        {
+          "heading": "每个领域都是交叉点",
+          "en": "Individuals × Experimentation and Modeling × Pathology produces a domain of Psychopathology.",
+          "zh": "“个体 × 实验与建模 × 病理”交叉，可定位精神病理学；不同格子仍然高度相互依存。",
+          "focus": "dimensions define each other and are co-dependent"
+        }
+      ],
+      "terms": [
+        { "id": "levels_organization", "en": "levels of organization", "zh": "组织水平", "note": "生物、个体、群体构成研究对象的三个层面。" },
+        { "id": "cross_cutting", "en": "cross-cutting perspectives", "zh": "横切视角", "note": "跨越不同组织水平观察同一心理现象的视角。" }
+      ],
+      "challenges": [
+        {
+          "id": "ch1_cube_axes",
+          "prompt": "Which three axes construct Cleeremans' psychology cube?",
+          "options": [
+            "levels, methods, and perspectives",
+            "theories, journals, and countries",
+            "therapies, diagnoses, and symptoms"
+          ],
+          "answer": 0,
+          "feedback": "三个维度各有三类，交叉产生 3 × 3 × 3 = 27 个子领域。",
+          "hint": "找研究对象、研究做法与总体关切。"
+        },
+        {
+          "id": "ch1_cube_pathology",
+          "prompt": "Which coordinates lead to Psychopathology in the example?",
+          "options": [
+            "individuals, experimentation and modeling, plus pathology",
+            "groups, intervention and treatment, plus normality",
+            "biology, observation and surveys, plus differences"
+          ],
+          "answer": 0,
+          "feedback": "教材示例把 Individuals、Experimentation and Modeling 与 Pathology 相交。",
+          "hint": "把研究个体、实验建模和病理异常连起来。"
+        }
+      ]
+    },
+    {
+      "id": "crisis",
+      "title": "可信度修复站",
+      "en": "Replication and Power",
+      "icon": "↻",
+      "color": "#52a568",
+      "location": "开放科学中心",
+      "pages": [
+        {
+          "heading": "新奇不等于可靠",
+          "en": "A genuine discovery gains credibility when independent scientists replicate it using the same method.",
+          "zh": "真正的发现应由独立科学家使用相同方法重复验证；“吸睛”的快餐结果不能替代复现。",
+          "focus": "independent replication builds credible theory"
+        },
+        {
+          "heading": "低功效的双向诅咒",
+          "en": "Low power may miss water in the desert or lead researchers toward a mirage.",
+          "zh": "样本过小既可能漏掉真实效应，也更容易把随机噪音误认为发现；大样本与功效规划能够缓解问题。",
+          "focus": "larger samples + power analysis"
+        }
+      ],
+      "terms": [
+        { "id": "replication", "en": "independent replication", "zh": "独立重复验证", "note": "由独立团队使用相同方法检验研究结果能否再次出现。" },
+        { "id": "underpowered", "en": "statistically underpowered", "zh": "统计效力不足", "note": "样本或设计无法以足够概率检测真实效应。" }
+      ],
+      "challenges": [
+        {
+          "id": "ch1_crisis_replication",
+          "prompt": "Which event provides the strongest evidence for replication?",
+          "options": [
+            "independent scientists reproduce the finding with the same method",
+            "original scientists explain the finding with a confident theory",
+            "famous journals publish the finding with an exciting headline"
+          ],
+          "answer": 0,
+          "feedback": "Independent replication 要求独立团队用相同方法再次获得相近结果。",
+          "hint": "同时寻找 independent 与 same method。"
+        },
+        {
+          "id": "ch1_crisis_power",
+          "prompt": "What does the low-power metaphor warn researchers about?",
+          "options": [
+            "missing real water and chasing a false mirage",
+            "collecting more water and mapping a distant desert",
+            "rejecting all water and trusting a familiar mirage"
+          ],
+          "answer": 0,
+          "feedback": "低功效既会漏掉真实效应，也可能让研究者追逐抽样噪音形成的假象。",
+          "hint": "记住这是一种“双向”风险。"
+        }
+      ]
+    }
+  ],
+  "battleSkills": [
+    {
+      "id": "scope_strike",
+      "key": "1",
+      "name": "界定",
+      "en": "Define Scope",
+      "color": "#e86c5d",
+      "claim": "“心理学只研究隐藏的想法！”",
+      "prompt": "Which card defines psychology's scope most accurately?",
+      "options": [
+        "behavior and mental processes across many connected domains",
+        "private thoughts and hidden meanings across selected clients",
+        "brain structures and medical problems across clinical settings"
+      ],
+      "answer": 0,
+      "success": "界定命中！心理学跨越行为、心理过程与多种分析层面。",
+      "retry": "范围过窄。教材定义同时包含 behavior 与 mental processes。"
+    },
+    {
+      "id": "integrate_strike",
+      "key": "2",
+      "name": "整合",
+      "en": "Integrate",
+      "color": "#8466b3",
+      "claim": "“二十七个领域彼此毫无关系！”",
+      "prompt": "How should modern psychology connect its many subfields?",
+      "options": [
+        "combine multiple levels and cross disciplinary perspectives",
+        "separate every level into permanently isolated specialties",
+        "replace scientific methods with one universal explanation"
+      ],
+      "answer": 0,
+      "success": "整合命中！魔方格子相互定义，并在交界处协同。",
+      "retry": "模型用于定位交叉点，不是把学科永久切断。"
+    },
+    {
+      "id": "replicate_strike",
+      "key": "3",
+      "name": "复现",
+      "en": "Replicate",
+      "color": "#3d94c6",
+      "claim": "“结果够新奇，就不必再检验！”",
+      "prompt": "Which action best strengthens a surprising finding?",
+      "options": [
+        "repeat the same method with independent scientific teams",
+        "promote the new result with influential academic journals",
+        "protect the first result from later scientific testing"
+      ],
+      "answer": 0,
+      "success": "复现命中！独立团队重复结果，才能提高科学公信力。",
+      "retry": "发表与宣传不能替代 independent replication。"
+    },
+    {
+      "id": "power_strike",
+      "key": "4",
+      "name": "增能",
+      "en": "Plan Power",
+      "color": "#52a568",
+      "claim": "“小样本也一定能发现真实效应！”",
+      "prompt": "Which plan directly reduces the low-power problem?",
+      "options": [
+        "use larger samples and plan statistical power beforehand",
+        "use smaller samples and report surprising patterns quickly",
+        "use selected samples and ignore uncertain results afterward"
+      ],
+      "answer": 0,
+      "success": "增能命中！更大样本与事前功效规划降低双向风险。",
+      "retry": "低功效来自设计与样本不足，不能靠更快发表解决。"
+    }
+  ],
+  "reviewSentence": "Psychology is an integrative and multilevel science that builds credible knowledge through evidence, replication, and adequately powered research."
+}

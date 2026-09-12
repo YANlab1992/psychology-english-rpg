@@ -7,6 +7,10 @@ import { CampusScene } from './scenes/CampusScene';
 import { DiagnosticScene } from './scenes/DiagnosticScene';
 import { BattleScene } from './scenes/BattleScene';
 import { EndingScene } from './scenes/EndingScene';
+import { Chapter1IntroScene } from './scenes/Chapter1IntroScene';
+import { Chapter1HubScene } from './scenes/Chapter1HubScene';
+import { Chapter1BattleScene } from './scenes/Chapter1BattleScene';
+import { Chapter1EndingScene } from './scenes/Chapter1EndingScene';
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
@@ -41,7 +45,10 @@ const config: Phaser.Types.Core.GameConfig = {
     touch: true,
     activePointers: 3
   },
-  scene: [BootScene, MenuScene, IntroScene, CampusScene, DiagnosticScene, BattleScene, EndingScene]
+  scene: [
+    BootScene, MenuScene, IntroScene, CampusScene, DiagnosticScene, BattleScene, EndingScene,
+    Chapter1IntroScene, Chapter1HubScene, Chapter1BattleScene, Chapter1EndingScene
+  ]
 };
 
 new Phaser.Game(config);
